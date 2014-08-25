@@ -1,0 +1,27 @@
+[Account]
+user = 
+pass = 
+
+[Token]
+sacsid = 
+csrftoken = 
+v = 
+appuid = 
+
+[Local]
+shflt = 
+lat = 
+lng = 
+zoom = 
+
+[Bound]
+maxlat = 
+minlat = 
+maxlng = 
+minlng = 
+
+[Portal]
+maxlat = 
+minlat = 
+maxlng = 
+minlng = 
