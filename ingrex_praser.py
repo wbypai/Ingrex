@@ -54,34 +54,35 @@ class msgPraser(object):
 
 class mapPraser(object):
     def __init__(self):
-        self.portal = {}
+        self.polist = []
         pass
     
     def load_json(self, itemlist):
         for item in itemlist:
-            guid = item[0]
-            if guid[-2:] in ['16', '11']:
-                if guid in self.portaldict.keys():
+            if item[0][-2:] in ['16', '11']:
+                portal = {
+                'guid': item[0],
+                'title': item[2]['title'],
+                'latE6': item[2]['latE6'],
+                'lngE6': item[2]['lngE6']
+                }
+                if portal in self.polist:
                     pass
                 else:
-                    self.portal[guid] = {
-                        'title': item[2]['title'],
-                        'latE6': item[2]['latE6'],
-                        'lngE6': item[2]['lngE6']
-                        }
+                    self.polist.append(portal)
     
     def std_print(self):
-        for guid in self.portal:
+        for portal in self.polist:
             print('%s, %s, %s, %s' % (
-                guid, self.portal[guid]['title'], self.portal[guid]['latE6'],
-                self.portal[guid]['lngE6']))
+                portal['guid'], portal['latE6'], portal['lngE6'],
+                portal['title']))
     
     def std_save(self):
         with open('portal.log', 'w', encoding='utf-8') as file:
-            for item in self.portal.items():
+            for portal in self.polist:
                 file.write('%s, %s, %s, %s\n' % (
-                    guid, self.portal[guid]['title'],
-                    self.portal[guid]['latE6'], self.portal[guid]['lngE6']))
+                    portal['guid'],  portal['latE6'], portal['lngE6'],
+                    portal['title']))
 
 
 class portalPraser(object):
