@@ -1,4 +1,4 @@
-Ingrex
-======
+#Ingrex
 
-A python lib for Google Ingress including intel oauth, intel api, message process, portal process, map process.
+A python lib for Google Ingress including all necessary functions you need to build a bot.
+
