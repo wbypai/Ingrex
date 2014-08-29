@@ -68,10 +68,7 @@ class Intel(object):
                 time.sleep(1)
         if i == 3:
             self._check_connection()
-        if request.text:
-            return request.text
-        else:
-            raise Exception('No Response')
+        return request.text
     
     def _check_connection(self):
         """
@@ -90,8 +87,10 @@ class Intel(object):
         try:
             request = requests.get(url, headers=headers, verify=False)
         except:
+            logging.warning('Connection Error')
             raise Exception('Connection Error')
         else:
+            logging.warning('Authentication Failed')
             raise Exception('Authentication Failed')
     
     def fetch_msg(

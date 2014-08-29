@@ -23,7 +23,8 @@ class Auth(object):
         'user-agent': ('Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36'
             ' (KHTML, like Gecko) Chrome/36.0.1985.143 Safari/537.36'),
         }
-        request = requests.get('https://www.ingress.com/jsc/gen_dashboard.js', headers=headers, verify=False)
+        request = requests.get('https://www.ingress.com/jsc/gen_dashboard.js',
+            headers=headers, verify=False)
         reg = '"([\da-f]{40})"'
         v = re.search(reg, request.text).group(1)
         self.config['Verify']['v'] = v
@@ -46,7 +47,8 @@ class Auth(object):
         'ingress.intelmap.lng': self.config['Local']['lng'],
         'ingress.intelmap.zoom': self.config['Local']['zoom'],
         }
-        request = requests.get('https://www.ingress.com/intel', headers=headers, cookies=cookies, verify=False)
+        request = requests.get('https://www.ingress.com/intel', headers=headers,
+            cookies=cookies, verify=False)
         reg = '"(\w{5}-\w{37})"'
         b = re.search(reg, request.text).group(1)
         self.config['Verify']['b'] = b
