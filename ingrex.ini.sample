@@ -5,6 +5,10 @@ pass =
 [Token]
 sacsid = 
 csrftoken = 
+
+[Verify]
+b = 
+c = 
 v = 
 appuid = 
 
