@@ -1,4 +1,5 @@
 import requests
+import re
 from ingrex_config import config
 
 class Auth(object):
@@ -13,7 +14,7 @@ class Auth(object):
         """
         self.config = config()
     
-    def fetch_version(self):
+    def fetch_v(self):
         """
         Fetch the version of the ingress api.
         """
@@ -23,5 +24,7 @@ class Auth(object):
             ' (KHTML, like Gecko) Chrome/36.0.1985.143 Safari/537.36'),
         }
         request = requests.get('https://www.ingress.com/jsc/gen_dashboard.js', headers=headers, verify=False)
-        offset = request.text.index('b.v="') + 5
-        self.config['Verify']['v'] = request.text[offset:offset + 40]
+        reg = r'"([\da-f]{40})"'
+        v = re.search(reg, request.text).group(1)
+        self.config['Verify']['v'] = v
+

@@ -8,3 +8,4 @@ def config():
         format='%(asctime)s - %(levelname)s: %(message)s',
         level = logging.DEBUG)
     return config
+

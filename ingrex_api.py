@@ -38,6 +38,7 @@ class Intel(object):
         'referer': 'https://www.ingress.com/intel',
         'user-agent': ('Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36'
             ' (KHTML, like Gecko) Chrome/36.0.1985.143 Safari/537.36'),
+        'content-type': 'application/json; charset=UTF-8'
         'x-csrftoken': self.config['Token']['CSRFTOKEN']
         }
         cookies = {
@@ -205,3 +206,15 @@ class Intel(object):
         }
         jsondata = json.loads(self._request(url, params=payload))
         return jsondata
+    
+    def fetch_artifacts
+        """
+        fetch the artifacts details.
+        """
+        
+        url = 'https://www.ingress.com/r/artifacts'
+        payload={
+        }
+        jsondata = json.loads(self._request(url, params=payload))
+        return jsondata
+
