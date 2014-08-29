@@ -43,20 +43,23 @@ class Intel(object):
         cookies = {
         'SACSID': self.config['Token']['sacsid'],
         'csrftoken': self.config['Token']['csrftoken'],
-        'GOOGAPPUID': self.config['Token']['appuid'],
+        'GOOGAPPUID': self.config['Verify']['appuid'],
         'ingress.intelmap.shflt': self.config['Local']['shflt'],
         'ingress.intelmap.lat': self.config['Local']['lat'],
         'ingress.intelmap.lng': self.config['Local']['lng'],
         'ingress.intelmap.zoom': self.config['Local']['zoom'],
         }
+        params['v'] = self.config['Verify']['v']
+        params['b'] = self.config['Verify']['b']
+        params['c'] = self.config['Verify']['c']
         payload = json.dumps(params)
         i = 0
         while i < 3:
             try:
-                logging.debug('Request: ' + payload)
                 request = requests.post(url, data=payload, headers=headers,
                     cookies=cookies, verify=False)
                 request.raise_for_status()
+                logging.debug('Request: ' + payload)
                 logging.debug('Response: ' + request.text)
                 break
             except ConnectionError:
@@ -64,7 +67,10 @@ class Intel(object):
                 time.sleep(1)
         if i == 3:
             self._check_connection()
-        return request.text
+        if request.text:
+            return request.text
+        else:
+            raise Exception('No Response')
     
     def _check_connection(self):
         """
@@ -115,14 +121,10 @@ class Intel(object):
         'maxTimestampMs': maxTimestampMs,
         'minTimestampMs': minTimestampMs,
         'tab': tab,
-        'v': self.config['Token']['v']
         }
         if ascendingTimestampOrder:
             payload['ascendingTimestampOrder'] = True
-        try:
-            jsondata = json.loads(self._request(url, params=payload))
-        except:
-            jsondata = {}
+        jsondata = json.loads(self._request(url, params=payload))
         return jsondata
     
     def fetch_map(self, tileKeys=[]):
@@ -143,12 +145,8 @@ class Intel(object):
         url = 'https://www.ingress.com/r/getEntities'
         payload={
         'tileKeys': tileKeys,
-        'v': self.config['Token']['v']
         }
-        try:
-            jsondata = json.loads(self._request(url, params=payload))
-        except:
-            jsondata = {}
+        jsondata = json.loads(self._request(url, params=payload))
         return jsondata
     
     def fetch_portal(self, guid):
@@ -160,12 +158,8 @@ class Intel(object):
         url = 'https://www.ingress.com/r/getPortalDetails'
         payload={
         'guid': guid,
-        'v': self.config['Token']['v']
         }
-        try:
-            jsondata = json.loads(self._request(url, params=payload))
-        except:
-            jsondata = {}
+        jsondata = json.loads(self._request(url, params=payload))
         return jsondata
     
     def send_msg(self, msg, tab='all'):
@@ -183,12 +177,8 @@ class Intel(object):
         'latE6': int(self.config['Local']['LatE6']),
         'lngE6': int(self.config['Local']['LngE6']),
         'tab': tab,
-        'v': self.config['Token']['v']
         }
-        try:
-            jsondata = json.loads(self._request(url, params=payload))
-        except:
-            jsondata = {}
+        jsondata = json.loads(self._request(url, params=payload))
         return jsondata
     
     def redeem_code(self, passcode):
@@ -200,12 +190,8 @@ class Intel(object):
         url = 'https://www.ingress.com/r/redeemReward'
         payload={
         'passcode': passcode,
-        'v': self.config['Token']['v']
         }
-        try:
-            jsondata = json.loads(self._request(url, params=payload))
-        except:
-            jsondata = {}
+        jsondata = json.loads(self._request(url, params=payload))
         return jsondata
     
     def fetch_score(self):
@@ -216,10 +202,6 @@ class Intel(object):
         
         url = 'https://www.ingress.com/r/getGameScore'
         payload={
-        'v': self.config['Token']['v']
         }
-        try:
-            jsondata = json.loads(self._request(url, params=payload))
-        except:
-            jsondata = [0,0]
+        jsondata = json.loads(self._request(url, params=payload))
         return jsondata
