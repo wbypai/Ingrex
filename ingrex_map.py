@@ -2,6 +2,9 @@ from math import pi,sin,cos,tan,asin,radians,sqrt,log
 
 
 def fetch_tilekey(lat, lng):
+    """
+    Return the tile's x, y depend on the latitude and longitude.
+    """
     rlat = radians(lat)
     n = 9000
     xtile = int((lng + 180.0) / 360.0 * n)
@@ -10,6 +13,10 @@ def fetch_tilekey(lat, lng):
 
 
 def fetch_distence(lat1, lng1, lat2, lng2):
+    """
+    Return the shortest distence between the two point.
+    Unit of Linear Measure : meter.
+    """
     lat1, lng1, lat2, lng2 = map(radians, [lat1, lng1, lat2, lng2])
     dlat = lat1 - lat2
     dlng = lng1 - lng2
@@ -20,6 +27,11 @@ def fetch_distence(lat1, lng1, lat2, lng2):
 
 
 def point_in_polygon(x, y, poly):
+    """
+    poly = [(x1, y1), (x2, y2), (x3, y3), ...]
+    if the point (x,y) inside or on the boundary of the polygon, return True
+    if the point (x,y) outside of the polygon, return False
+    """
     n = len(poly)
     inside = False
     p1x,p1y = poly[0]
@@ -38,6 +50,7 @@ def point_in_polygon(x, y, poly):
 
 def transform(wgLat, wgLon):
     """
+    transform the latitude and longitude from Earth to Mars
     transform(latitude,longitude) , WGS84
     return (latitude,longitude) , GCJ02
     """
