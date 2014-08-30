@@ -29,6 +29,31 @@ class Intel(object):
         self.config['Local']['LngE6'] = str(int(float(
             self.config['Local']['lng']) * 1000000))
     
+    def fetch_player(self):
+        import re
+        """
+        Fetch player infomations.
+        """
+        headers = {
+        'referer': 'https://www.ingress.com/intel',
+        'user-agent': ('Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36'
+            ' (KHTML, like Gecko) Chrome/36.0.1985.143 Safari/537.36'),
+        }
+        cookies = {
+        'SACSID': self.config['Token']['sacsid'],
+        'csrftoken': self.config['Token']['csrftoken'],
+        'GOOGAPPUID': self.config['Verify']['appuid'],
+        'ingress.intelmap.shflt': self.config['Local']['shflt'],
+        'ingress.intelmap.lat': self.config['Local']['lat'],
+        'ingress.intelmap.lng': self.config['Local']['lng'],
+        'ingress.intelmap.zoom': self.config['Local']['zoom'],
+        }
+        request = requests.get('https://www.ingress.com/intel', headers=headers,
+            cookies=cookies, verify=False)
+        reg = 'PLAYER = ({.*});'
+        jsondata = json.loads(re.search(reg, request.text).group(1))
+        return jsondata
+    
     def _request(self, url, params={}):
         """
         Raw request with auto-retry and connection check function
@@ -98,7 +123,7 @@ class Intel(object):
         maxTimestampMs=-1, tab='all'):
         """
         fetch message from Ingress COMM.
-        response json like this: {"success":[messageObj-1, messageObj-2, ...]}
+        response dictionary like this: {"success":[messageObj-1, messageObj-2, ...]}
         or {"error":"errorMessage"}
         
         ascendingTimestampOrder:
@@ -120,7 +145,7 @@ class Intel(object):
         'minLngE6': int(self.config['Bound']['minLngE6']),
         'maxTimestampMs': maxTimestampMs,
         'minTimestampMs': minTimestampMs,
-        'tab': tab,
+        'tab': tab
         }
         if ascendingTimestampOrder:
             payload['ascendingTimestampOrder'] = True
@@ -130,7 +155,7 @@ class Intel(object):
     def fetch_map(self, tileKeys=[]):
         """
         fetch game entities from Ingress map.
-        response json like this:
+        response dictionary like this:
         {"result":{"map":{"tileKey-1":{x}, "tileKey-2":{x}, ...}}}
         or {"error":"errorMessage"}
         
@@ -144,7 +169,7 @@ class Intel(object):
         
         url = 'https://www.ingress.com/r/getEntities'
         payload={
-        'tileKeys': tileKeys,
+        'tileKeys': tileKeys
         }
         jsondata = json.loads(self._request(url, params=payload))
         return jsondata
@@ -152,12 +177,41 @@ class Intel(object):
     def fetch_portal(self, guid):
         """
         fetch portal details from Ingress.
-        response json as a dictionary with keys like "level", "team" and so on.
+        response a dictionary with keys like "level", "team" and so on.
         """
         
         url = 'https://www.ingress.com/r/getPortalDetails'
         payload={
-        'guid': guid,
+        'guid': guid
+        }
+        jsondata = json.loads(self._request(url, params=payload))
+        return jsondata
+    
+    def fetch_score(self):
+        """
+        fetch the globe score of RESISTANCE and ENLIGHTENED.
+        response dictionary like: ["ENLIGHTENED score","RESISTANCE score"].
+        """
+        
+        url = 'https://www.ingress.com/r/getGameScore'
+        payload={
+        }
+        jsondata = json.loads(self._request(url, params=payload))
+        return jsondata
+    
+    def fetch_artifacts(self):
+        """
+        fetch the artifacts details.
+        response dictionary like:
+        {"artifacts":[{
+            "artifactId": "x"
+            "targetInfos": [x],
+            "fragmentInfos": [x],
+        }]}
+        """
+        
+        url = 'https://www.ingress.com/r/artifacts'
+        payload={
         }
         jsondata = json.loads(self._request(url, params=payload))
         return jsondata
@@ -165,7 +219,7 @@ class Intel(object):
     def send_msg(self, msg, tab='all'):
         """
         send a message to Ingress COMM.
-        response json like: {"result":"success"}.
+        response dictionary like: {"result":"success"}.
         
         tab:
         - 'all', 'faction', 'alerts' for different tab.
@@ -176,7 +230,20 @@ class Intel(object):
         'message': msg,
         'latE6': int(self.config['Local']['LatE6']),
         'lngE6': int(self.config['Local']['LngE6']),
-        'tab': tab,
+        'tab': tab
+        }
+        jsondata = json.loads(self._request(url, params=payload))
+        return jsondata
+    
+    def send_invite(self, address):
+        """
+        send a recruit to an email address.
+        response json like: {"error":"NO_INVITES_AVAILABLE"}.
+        """
+        
+        url = 'https://www.ingress.com/r/sendInviteEmail'
+        payload={
+        'inviteeEmailAddress': address
         }
         jsondata = json.loads(self._request(url, params=payload))
         return jsondata
@@ -189,30 +256,7 @@ class Intel(object):
         
         url = 'https://www.ingress.com/r/redeemReward'
         payload={
-        'passcode': passcode,
-        }
-        jsondata = json.loads(self._request(url, params=payload))
-        return jsondata
-    
-    def fetch_score(self):
-        """
-        fetch the globe score of RESISTANCE and ENLIGHTENED.
-        response json like: ["ENLIGHTENED score","RESISTANCE score"].
-        """
-        
-        url = 'https://www.ingress.com/r/getGameScore'
-        payload={
-        }
-        jsondata = json.loads(self._request(url, params=payload))
-        return jsondata
-    
-    def fetch_artifacts(self):
-        """
-        fetch the artifacts details.
-        """
-        
-        url = 'https://www.ingress.com/r/artifacts'
-        payload={
+        'passcode': passcode
         }
         jsondata = json.loads(self._request(url, params=payload))
         return jsondata
