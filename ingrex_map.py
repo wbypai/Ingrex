@@ -1,13 +1,15 @@
 from math import pi,sin,cos,tan,asin,radians,sqrt,log
 
-def calc_tile(lat, lng):
+
+def fetch_tilekey(lat, lng):
     rlat = radians(lat)
     n = 9000
     xtile = int((lng + 180.0) / 360.0 * n)
     ytile = int((1.0 - log(tan(rlat) + (1 / cos(rlat))) / pi) / 2.0 * n)
     return xtile, ytile
 
-def calc_dist(lat1, lng1, lat2, lng2):
+
+def fetch_distence(lat1, lng1, lat2, lng2):
     lat1, lng1, lat2, lng2 = map(radians, [lat1, lng1, lat2, lng2])
     dlat = lat1 - lat2
     dlng = lng1 - lng2
@@ -16,7 +18,8 @@ def calc_dist(lat1, lng1, lat2, lng2):
     m = 6367.0 * c * 1000
     return m
 
-def point_in_poly(x, y, poly):
+
+def point_in_polygon(x, y, poly):
     n = len(poly)
     inside = False
     p1x,p1y = poly[0]
@@ -32,11 +35,34 @@ def point_in_poly(x, y, poly):
         p1x,p1y = p2x,p2y
     return inside
 
+
 def transform(wgLat, wgLon):
     """
     transform(latitude,longitude) , WGS84
     return (latitude,longitude) , GCJ02
     """
+    
+    def _outOfChina(lat, lon):
+        if (lon < 72.004 or lon > 137.8347):
+            return True
+        if (lat < 0.8293 or lat > 55.8271):
+            return True
+        return False
+    
+    def _transformLat(x, y):
+        ret = -100.0 + 2.0 * x + 3.0 * y + 0.2 * y * y + 0.1 * x * y + 0.2 * sqrt(abs(x))
+        ret += (20.0 * sin(6.0 * x * pi) + 20.0 * sin(2.0 * x * pi)) * 2.0 / 3.0
+        ret += (20.0 * sin(y * pi) + 40.0 * sin(y / 3.0 * pi)) * 2.0 / 3.0
+        ret += (160.0 * sin(y / 12.0 * pi) + 320 * sin(y * pi / 30.0)) * 2.0 / 3.0
+        return ret
+    
+    def _transformLon(x, y):
+        ret = 300.0 + x + 2.0 * y + 0.1 * x * x + 0.1 * x * y + 0.1 * sqrt(abs(x))
+        ret += (20.0 * sin(6.0 * x * pi) + 20.0 * sin(2.0 * x * pi)) * 2.0 / 3.0
+        ret += (20.0 * sin(x * pi) + 40.0 * sin(x / 3.0 * pi)) * 2.0 / 3.0
+        ret += (150.0 * sin(x / 12.0 * pi) + 300.0 * sin(x / 30.0 * pi)) * 2.0 / 3.0
+        return ret
+    
     a = 6378245.0
     ee = 0.00669342162296594323
     if (_outOfChina(wgLat, wgLon)):
@@ -55,24 +81,4 @@ def transform(wgLat, wgLon):
     mgLon = wgLon + dLon
     return mgLat,mgLon
 
-def _outOfChina(lat, lon):
-    if (lon < 72.004 or lon > 137.8347):
-        return True
-    if (lat < 0.8293 or lat > 55.8271):
-        return True
-    return False
-
-def _transformLat(x, y):
-    ret = -100.0 + 2.0 * x + 3.0 * y + 0.2 * y * y + 0.1 * x * y + 0.2 * sqrt(abs(x))
-    ret += (20.0 * sin(6.0 * x * pi) + 20.0 * sin(2.0 * x * pi)) * 2.0 / 3.0
-    ret += (20.0 * sin(y * pi) + 40.0 * sin(y / 3.0 * pi)) * 2.0 / 3.0
-    ret += (160.0 * sin(y / 12.0 * pi) + 320 * sin(y * pi / 30.0)) * 2.0 / 3.0
-    return ret
-
-def _transformLon(x, y):
-    ret = 300.0 + x + 2.0 * y + 0.1 * x * x + 0.1 * x * y + 0.1 * sqrt(abs(x))
-    ret += (20.0 * sin(6.0 * x * pi) + 20.0 * sin(2.0 * x * pi)) * 2.0 / 3.0
-    ret += (20.0 * sin(x * pi) + 40.0 * sin(x / 3.0 * pi)) * 2.0 / 3.0
-    ret += (150.0 * sin(x / 12.0 * pi) + 300.0 * sin(x / 30.0 * pi)) * 2.0 / 3.0
-    return ret
 

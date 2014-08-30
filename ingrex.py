@@ -1,7 +1,7 @@
 from ingrex_api import Intel
 from ingrex_auth import Auth
 from ingrex_praser import msgPraser, mapPraser, portalPraser
-from ingrex_map import calc_tile, calc_dist, point_in_poly, transform
+from ingrex_map import *
 
 def main():
     intel = Intel()
