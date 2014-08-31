@@ -160,10 +160,10 @@ class Intel(object):
         or {"error":"errorMessage"}
         
         tileKeys is a list with less than 5 tileKey.
-        tileKey: "zoomLevel_latTile_lngTile_minLevel_maxLevel_100"
-        zoomLevel = 17, minLevel = 0, maxLevel = 8 is prefered.
+        tileKey: "zoomLevel_latTile_lngTile_minLevel_maxLevel_health"
+        zoomLevel = 17, minLevel = 0, maxLevel = 8, health = 100 is prefered.
         
-        I guess if you try to get all the portal using zoomLevel = 1,
+        I guess if you try to get all the portal(L0-L8) using zoomLevel = 1,
         you will be baned in a moment.
         """
         
