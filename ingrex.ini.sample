@@ -24,8 +24,7 @@ minlat =
 maxlng = 
 minlng = 
 
-[Portal]
-maxlat = 
-minlat = 
-maxlng = 
-minlng = 
+[Proxy]
+enable = 
+http = 
+https = 

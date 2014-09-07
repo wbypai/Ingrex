@@ -6,6 +6,6 @@ def config():
     config.read('ingrex.ini')
     logging.basicConfig(filename ='ingrex.log', filemode='w',
         format='%(asctime)s - %(levelname)s: %(message)s',
-        level = logging.DEBUG)
+        level = logging.WARNING)
     return config
 

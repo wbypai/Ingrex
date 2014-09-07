@@ -16,6 +16,9 @@ class msgPraser(object):
             if jsondata['error'] == 'out of date':
                 logging.warning('API Version out of date')
                 raise Exception('v')
+            else:
+                logging.warning(jsondata['error'])
+                raise Exception('u')
         else:
             self.data = []
         

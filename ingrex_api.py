@@ -28,6 +28,13 @@ class Intel(object):
             self.config['Local']['lat']) * 1000000))
         self.config['Local']['LngE6'] = str(int(float(
             self.config['Local']['lng']) * 1000000))
+        if self.config['Proxy']['enable'] == 'True':
+            self.proxies = {
+                'http': self.config['Proxy']['http'],
+                'https': self.config['Proxy']['https']
+            }
+        else:
+            self.proxies = {}
     
     def fetch_player(self):
         import re
@@ -49,7 +56,7 @@ class Intel(object):
         'ingress.intelmap.zoom': self.config['Local']['zoom'],
         }
         request = requests.get('https://www.ingress.com/intel', headers=headers,
-            cookies=cookies, verify=False)
+            cookies=cookies, verify=False, proxies=self.proxies)
         reg = 'PLAYER = ({.*});'
         jsondata = json.loads(re.search(reg, request.text).group(1))
         return jsondata
@@ -83,7 +90,7 @@ class Intel(object):
         while i < 3:
             try:
                 request = requests.post(url, data=payload, headers=headers,
-                    cookies=cookies, verify=False)
+                    cookies=cookies, verify=False, proxies=self.proxies)
                 request.raise_for_status()
                 logging.debug('Request: ' + payload)
                 logging.debug('Response: ' + request.text)
@@ -110,7 +117,7 @@ class Intel(object):
             ' (KHTML, like Gecko) Chrome/36.0.1985.143 Safari/537.36'),
         }
         try:
-            request = requests.get(url, headers=headers, verify=False)
+            request = requests.get(url, headers=headers, verify=False, proxies=self.proxies)
         except:
             logging.warning('Connection Error')
             raise Exception('Connection Error')
@@ -123,7 +130,8 @@ class Intel(object):
         maxTimestampMs=-1, tab='all'):
         """
         fetch message from Ingress COMM.
-        response dictionary like this: {"success":[messageObj-1, messageObj-2, ...]}
+        response dictionary like this:
+        {"success":[messageObj-1, messageObj-2, ...]}
         or {"error":"errorMessage"}
         
         ascendingTimestampOrder:
@@ -251,7 +259,20 @@ class Intel(object):
     def redeem_code(self, passcode):
         """
         redeem a passcode in Ingress.
-        response json like: {"error":"Invalid passcode."}.
+        response json like:
+        {
+            "ap":"0",
+            "xm":"0",
+            "other":[],
+            "inventory":[
+                {
+                    "awards":[{"count":1,"level":4}],
+                    "name":"Power Cube"
+                }
+            ]
+        }
+        {"error":"Invalid passcode."}
+        {"error":"Passcode already redeemed."}
         """
         
         url = 'https://www.ingress.com/r/redeemReward'

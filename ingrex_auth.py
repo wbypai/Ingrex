@@ -13,6 +13,13 @@ class Auth(object):
         Initialize with the configs.
         """
         self.config = config()
+        if self.config['Proxy']['enable'] == 'True':
+            self.proxies = {
+                'http': self.config['Proxy']['http'],
+                'https': self.config['Proxy']['https']
+            }
+        else:
+            self.proxies = {}
     
     def fetch_v(self):
         """
@@ -24,7 +31,7 @@ class Auth(object):
             ' (KHTML, like Gecko) Chrome/36.0.1985.143 Safari/537.36'),
         }
         request = requests.get('https://www.ingress.com/jsc/gen_dashboard.js',
-            headers=headers, verify=False)
+            headers=headers, verify=False, proxies=self.proxies)
         reg = '"([\da-f]{40})"'
         v = re.search(reg, request.text).group(1)
         self.config['Verify']['v'] = v
@@ -48,7 +55,7 @@ class Auth(object):
         'ingress.intelmap.zoom': self.config['Local']['zoom'],
         }
         request = requests.get('https://www.ingress.com/intel', headers=headers,
-            cookies=cookies, verify=False)
+            cookies=cookies, verify=False, proxies=self.proxies)
         reg = '"(\w{5}-\w{37})"'
         b = re.search(reg, request.text).group(1)
         self.config['Verify']['b'] = b

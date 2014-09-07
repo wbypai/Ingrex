@@ -5,6 +5,9 @@ __pycache__/
 # Libs and configs
 ingrex.ini
 requests/
+msg/
+action_*
+python.bat
 
 # C extensions
 *.so
