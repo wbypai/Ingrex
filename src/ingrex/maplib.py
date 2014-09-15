@@ -1,5 +1,7 @@
-from math import pi,sin,cos,tan,asin,radians,sqrt,log
+#coding=utf-8
 
+from __future__ import division
+from math import pi,sin,cos,tan,asin,radians,sqrt,log
 
 def fetch_tilekey(lat, lng):
     """
