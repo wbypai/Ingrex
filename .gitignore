@@ -6,6 +6,9 @@ __pycache__/
 ingrex.ini
 packages
 requests
+*.lnk
+*.log
+*.json
 *.bat
 
 # C extensions
