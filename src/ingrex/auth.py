@@ -3,6 +3,7 @@
 from __future__ import unicode_literals
 from .packages import requests
 import re
+import logging
 from .config import Config
 
 def verify():
@@ -17,6 +18,10 @@ def verify():
     while flag:
         request = requests.get('https://www.ingress.com/jsc/gen_dashboard.js',
             headers=headers, verify=False, proxies=proxies)
+        logging.debug('Request: ' + payload)
+        logging.debug('Response: ' + response)
+        logging.debug('Completed transfers in {:.3f}s'.format(
+            request.elapsed.total_seconds()))
         reg = '"([\da-f]{40})"'
         try:
             v = re.search(reg, request.text).group(1)

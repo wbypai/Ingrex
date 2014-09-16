@@ -1,10 +1,16 @@
+#coding=utf-8
+
+from __future__ import unicode_literals
 from ingrex import intel, auth, maplib
 from ingrex.config import Config
 import json
 import os
 import datetime
+import time
+from io import open
 
 def fetch(tileKeys=[]):
+    time.sleep(5)
     jsondata = intel.fetch_map(tileKeys)
     prtlist = []
     fetched = []
@@ -23,7 +29,7 @@ def fetch(tileKeys=[]):
     return prtlist, fetched
 
 def download():
-    with open(Config.get('Option', 'datapath') + 'prt.ini') as file:
+    with open(Config.get('Option', 'datapath') + 'prt.ini', 'r', encoding='ascii') as file:
         tilekeylist = file.read().split('\n')[:-1]
     nowtime = datetime.datetime.now()
     downlist = tilekeylist[0:4]
@@ -35,19 +41,19 @@ def download():
     prtlist, fetched = fetch(downlist)
     print(str(len(fetched)) + ' tiles fetched!')
     prtcount = 0
-    with open(Config.get('Option', 'datapath') + 'prt.json', 'a+') as file:
+    with open(Config.get('Option', 'datapath') + 'prt.json', 'a+', encoding='ascii') as file:
         for prt in prtlist:
             if prt[2]['type'] == 'portal':
                 file.write(json.dumps(prt) + '\n')
                 prtcount += 1
     print(str(prtcount) + ' portals fetched!')
-    with open(Config.get('Option', 'datapath') + 'prt.ini', 'w') as file:
+    with open(Config.get('Option', 'datapath') + 'prt.ini', 'w', encoding='ascii') as file:
         for tilekey in tilekeylist:
             if not tilekey in fetched:
                 file.write(tilekey + '\n')
 
 def simplify():
-    with open(Config.get('Option', 'datapath') + 'prt.json', 'r') as file:
+    with open(Config.get('Option', 'datapath') + 'prt.json', 'r', encoding='ascii') as file:
         prts = file.readlines()
     
     guids = []
@@ -61,7 +67,7 @@ def simplify():
             prtlist.append(json.dumps(prt))
             guids.append(prt[0])
     prtlist.sort()
-    with open(Config.get('Option', 'datapath') + 'prt.json', 'w') as file:
+    with open(Config.get('Option', 'datapath') + 'prt.json', 'w', encoding='ascii') as file:
         for prt in prtlist:
             file.write(prt + '\n')
     
@@ -69,7 +75,7 @@ def main():
     if os.path.isfile(Config.get('Option', 'datapath') + 'prt.ini'):
         pass
     else:
-        with open(Config.get('Option', 'datapath') + 'prt.ini', 'w') as file:
+        with open(Config.get('Option', 'datapath') + 'prt.ini', 'w', encoding='ascii') as file:
             xtilemax, ytilemin = maplib.fetch_tilekey(Config.getfloat('Bound', 'maxlat'), Config.getfloat('Bound', 'maxlng'))
             xtilemin, ytilemax = maplib.fetch_tilekey(Config.getfloat('Bound', 'minlat'), Config.getfloat('Bound', 'minlng'))
             for x in range(xtilemin, xtilemax + 1):
@@ -80,7 +86,7 @@ def main():
     if os.path.isfile('action_mapper.on'):
         pass
     else:
-        with open('action_mapper.on', 'w') as file:
+        with open('action_mapper.on', 'w', encoding='ascii') as file:
             file.write('\n')
     
     while os.path.isfile('action_mapper.on'):
@@ -92,4 +98,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+    print('Over!')
 

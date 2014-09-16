@@ -3,22 +3,29 @@
 from __future__ import unicode_literals
 from ingrex import intel, auth, praser
 import json
+import time
 
 def test_intel():
     intel.fetch_msg()
     print('OK!')
+    time.sleep(1)
     intel.fetch_map(['17_7407_3407_0_8_100'])
     print('OK!')
+    time.sleep(1)
     intel.fetch_portal('8eba50b8aca24938809514c50de5bcd3.11')
     print('OK!')
+    time.sleep(1)
     intel.fetch_score()
     print('OK!')
+    time.sleep(1)
     intel.fetch_artifacts()
     print('OK!')
+    time.sleep(1)
     print('module Intel test OK')
 
 def test_auth():
     if auth.verify():
+        time.sleep(1)
         print('OK!')
         print('module Auth test OK')
 
@@ -29,7 +36,7 @@ def test_praser():
 
 
 def main():
-    #test_intel()
+    test_intel()
     test_auth()
     test_praser()
 

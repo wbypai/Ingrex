@@ -15,5 +15,5 @@ with open('ingrex.ini', encoding='utf-8') as file:
 
 logging.basicConfig(filename ='ingrex.log', filemode='w',
     format='%(asctime)s - %(levelname)s: %(message)s',
-    level = logging.WARNING)
+    level = Config.getint('Option', 'debug'))
 

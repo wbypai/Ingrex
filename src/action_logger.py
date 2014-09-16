@@ -1,10 +1,16 @@
+#coding=utf-8
+
+from __future__ import unicode_literals
 from ingrex import intel, auth
 from ingrex.config import Config
 import json
 import os
 import datetime
+import time
+from io import open
 
 def fetch(minTimestampMs, maxTimestampMs=-1, ascendingTimestampOrder=True):
+    time.sleep(5)
     jsondata = intel.fetch_msg(ascendingTimestampOrder, minTimestampMs, maxTimestampMs)
     msglist = []
     if 'success' in jsondata:
@@ -15,7 +21,7 @@ def fetch(minTimestampMs, maxTimestampMs=-1, ascendingTimestampOrder=True):
     return msglist
 
 def download():
-    with open(Config.get('Option', 'datapath') + 'msg.ini') as file:
+    with open(Config.get('Option', 'datapath') + 'msg.ini', 'r', encoding='ascii') as file:
         minTimestampMs = int(file.readline())
         lastguid = file.readline()
     daytime = datetime.datetime.fromtimestamp(minTimestampMs // 1000)
@@ -32,7 +38,7 @@ def download():
     if not msglist:
         os.remove('action_logger.on')
         raise Exception
-    file = open(Config.get('Option', 'datapath') + 'msg.json', 'a+')
+    file = open(Config.get('Option', 'datapath') + 'msg.json', 'a+', encoding='ascii')
     sysbc = 0
     if lastguid:
         flag = 0
@@ -46,7 +52,7 @@ def download():
         if msg[0] == lastguid:
             flag = 1
     file.close
-    print(str(sysbc) + ' messages fetched!')
+    print(str(sysbc) + ' system messages fetched!')
     try:
         lastguid = msglist[-1][0]
         if minTimestampMs == msglist[-1][1]:
@@ -56,7 +62,7 @@ def download():
             minTimestampMs = msglist[-1][1]
     except:
         pass
-    with open(Config.get('Option', 'datapath') + 'msg.ini', 'w') as file:
+    with open(Config.get('Option', 'datapath') + 'msg.ini', 'w', encoding='ascii') as file:
         file.write(str(minTimestampMs) + '\n')
         file.write(lastguid)
 
@@ -64,13 +70,13 @@ def main():
     if os.path.isfile(Config.get('Option', 'datapath') + 'msg.ini'):
         pass
     else:
-        with open(Config.get('Option', 'datapath') + 'msg.ini', 'w') as file:
+        with open(Config.get('Option', 'datapath') + 'msg.ini', 'w', encoding='ascii') as file:
             file.write(str(1396310400000) + '\n')
     
     if os.path.isfile('action_logger.on'):
         pass
     else:
-        with open('action_logger.on', 'w') as file:
+        with open('action_logger.on', 'w', encoding='ascii') as file:
             file.write('\n')
     
     while os.path.isfile('action_logger.on'):
@@ -81,4 +87,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+    print('Over!')
 
