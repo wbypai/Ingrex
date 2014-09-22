@@ -10,7 +10,6 @@ import time
 from io import open
 
 def fetch(minTimestampMs, maxTimestampMs=-1, ascendingTimestampOrder=True):
-    time.sleep(5)
     jsondata = intel.fetch_msg(ascendingTimestampOrder, minTimestampMs, maxTimestampMs)
     msglist = []
     if 'success' in jsondata:

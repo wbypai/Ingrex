@@ -10,7 +10,6 @@ import time
 from io import open
 
 def fetch(tileKeys=[]):
-    time.sleep(5)
     jsondata = intel.fetch_map(tileKeys)
     prtlist = []
     fetched = []

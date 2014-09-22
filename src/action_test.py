@@ -36,9 +36,9 @@ def test_praser():
 
 
 def main():
-    test_intel()
+    #test_intel()
     test_auth()
-    test_praser()
+    #test_praser()
 
 if __name__ == '__main__':
     main()

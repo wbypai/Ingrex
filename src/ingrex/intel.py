@@ -35,6 +35,7 @@ def fetch(url, params={}):
     payload = json.dumps(params)
     flag = 1
     while flag:
+        time.sleep(Config.getint('Option', 'interval'))
         try:
             request = requests.post(url, data=payload, headers=headers,
                 cookies=cookies, verify=False, proxies=proxies, timeout=timeout)
@@ -49,9 +50,8 @@ def fetch(url, params={}):
             logging.warning(e)
             flag += 1
             if flag > 3:
-                logging.error('Too many Connection Error')
-                raise Exception
-            time.sleep(1)
+                logging.error('Connection Error')
+                raise Exception('Connection Error')
     try:
         data = json.loads(response)
     except:
